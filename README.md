@@ -22,10 +22,10 @@ After docker build and run container, we just need a few seconds and Spring shou
 You can perform health check on this endpoint "http://localhost:8080/actuator/health" and status should be up.
 
 In addition, in application.properties we can change:
-async.executor.corePoolSize - minimum number of threads to keep alive
-async.executor.maxPoolSize - maximum number of threads running concurrently 
-async.executor.queueCapacity - capacity of threads queue waiting for pool to have free space
-task.processing.threadSleep - milliseconds that thread will sleep, during task process
+* async.executor.corePoolSize - minimum number of threads to keep alive
+* async.executor.maxPoolSize - maximum number of threads running concurrently 
+* async.executor.queueCapacity - capacity of threads queue waiting for pool to have free space
+* task.processing.threadSleep - milliseconds that thread will sleep, during task process
 
 ### API
 
@@ -77,13 +77,13 @@ When perform successfully, it returns Http code 200 with detailed info about suc
 In case that we want to get task which does not exist, this method will return Http error code 404 as Not Found.
 
 Meaning of detailed info parameters:
-id - task identification
-input - variable using during task creation 
-pattern - variable using during task creation 
-position - can be null, have information about the best match position of pattern in input
-typos - can be null, have information about how many typos are in best match position of pattern in input
-progress - the range of this value is 0%-100%, inform about current status of processing task, when value reaches 100% the process is end.  
-taskResult - can have 3 possible values: NEW, FAILED, SUCCESS. 
+* id - task identification
+* input - variable using during task creation 
+* pattern - variable using during task creation 
+* position - can be null, have information about the best match position of pattern in input
+* typos - can be null, have information about how many typos are in best match position of pattern in input
+* progress - the range of this value is 0%-100%, inform about current status of processing task, when value reaches 100% the process is end.  
+* taskResult - can have 3 possible values: NEW, FAILED, SUCCESS. 
 NEW means that the task is new and has not passed the process yet. 
 FAILED means that it passes the process, but no match is found. 
 SUCCESS means that it passes the process and finds the best match position.
