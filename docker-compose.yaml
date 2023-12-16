@@ -3,6 +3,6 @@ services:
   task-application:
     build: ./Server
     container_name: task-application
-    image: app_backend
+    image: task-application
     ports:
       - "8080:8080"

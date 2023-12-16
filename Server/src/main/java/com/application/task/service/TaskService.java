@@ -30,11 +30,8 @@ public class TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-    @Value("${async.executor.corePoolSize:2}")
-    int corePoolSize;
-
-    @Value("${thread.sleep:1000}")
-    long threadSleep;
+    @Value("${task.processing.threadSleep:1000}")
+    long taskProcessingThreadSleep;
 
     @Autowired
     private final InventoryTaskRepository inventoryTaskRepository;
@@ -53,8 +50,7 @@ public class TaskService {
         boolean invalid = validateInput(input, pattern);
         if(invalid){
             logger.warn("createTask() Input=" + input + " or pattern=" + pattern + " are invalid.");
-            return CompletableFuture.failedFuture(new InvalidInputDataException("createTask() Input=" + input + " or pattern=" + pattern + " are invalid."));
-//            throw new CompletionException(new InvalidInputDataException("createTask() Input=" + input + " or pattern=" + pattern + " are invalid."));
+            throw new CompletionException(new InvalidInputDataException("createTask() Input=" + input + " or pattern=" + pattern + " are invalid."));
         }
         Optional<Task> taskFromRepository = inventoryTaskRepository.getByInputAndPattern(input, pattern);
 
@@ -65,8 +61,8 @@ public class TaskService {
 
         Task task = inventoryTaskRepository.save(input, pattern);
 
-        TaskProcessor utils = new TaskProcessor(threadSleep);
-        ExecutorService threadPool = Executors.newFixedThreadPool(corePoolSize);
+        TaskProcessor utils = new TaskProcessor(taskProcessingThreadSleep);
+        ExecutorService threadPool = Executors.newFixedThreadPool(1);
         threadPool.submit(() -> utils.processTask(task));
 
 
@@ -105,9 +101,5 @@ public class TaskService {
         TaskResultDetailDTO result = taskToDtoMapper.taskToTaskResultDetailDto(optionalTask.get());
         logger.info("checkStatus() finish with result=" + result);
         return CompletableFuture.completedFuture(result);
-    }
-
-    public void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize = corePoolSize;
     }
 }

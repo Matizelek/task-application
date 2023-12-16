@@ -1,6 +1,8 @@
 package com.application.task.repository;
 
 import com.application.task.entity.Task;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +15,7 @@ public class MemoryRepository implements InventoryTaskRepository{
     private static final AtomicInteger idCounter = new AtomicInteger();
 
     @Override
+    @CacheEvict(value="tasks", allEntries = true)
     public Task save(final String input, final String pattern) {
         Integer id = idCounter.incrementAndGet();
         Task task = new Task(id, input, pattern);
@@ -21,25 +24,25 @@ public class MemoryRepository implements InventoryTaskRepository{
     }
 
     @Override
+    @Cacheable("tasks")
     public List<Task> getAll() {
-//        Map<Integer, Task> readOnlyMap = Collections.unmodifiableMap(repository);
-        return new ArrayList<>(repository.values());
+        return List.copyOf(repository.values());
     }
 
     @Override
+    @Cacheable("tasks")
     public Optional<Task> getById(final Integer id) {
         try{
-//            Map<Integer, Task> readOnlyMap = Collections.unmodifiableMap(repository);
-            return Optional.of(repository.get(id));
+            return Optional.of(Collections.unmodifiableMap(repository).get(id));
         } catch (final NullPointerException e){
             return Optional.empty();
         }
     }
 
     @Override
+    @Cacheable("tasks")
     public Optional<Task> getByInputAndPattern(final String input, final String pattern) {
-        Map<Integer, Task> readOnlyMap = Collections.unmodifiableMap(repository);
-        return readOnlyMap.values()
+        return Collections.unmodifiableMap(repository).values()
                 .stream()
                 .filter(task -> Objects.equals(task.getInput(), input) && Objects.equals(task.getPattern(), pattern))
                 .findFirst();

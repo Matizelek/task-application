@@ -44,7 +44,6 @@ class TaskServiceTest {
         inventoryTaskRepository = mock(InventoryTaskRepository.class);
         taskToDtoMapper = mock(TaskToDtoMapper.class);
         taskService = new TaskService(inventoryTaskRepository, taskToDtoMapper);
-        taskService.setCorePoolSize(1);
     }
 
     @Test

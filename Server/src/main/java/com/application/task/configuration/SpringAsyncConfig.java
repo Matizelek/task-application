@@ -15,7 +15,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     @Value("${async.executor.corePoolSize:2}")
     private int corePoolSize;
 
-    @Value("${async.executor.maxPoolSize:2}")
+    @Value("${async.executor.maxPoolSize:5}")
     private int maxPoolSize;
 
     @Value("${async.executor.queueCapacity:500}")
